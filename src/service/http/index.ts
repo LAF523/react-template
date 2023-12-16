@@ -21,4 +21,4 @@ export const post = (url: string, data: object) => {
   );
 };
 
-// TODO: 其他方法
+// TODO: 其他方法同post
