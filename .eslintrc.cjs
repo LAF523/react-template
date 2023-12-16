@@ -41,6 +41,7 @@ module.exports = {
     'no-alert': 2,
     'no-dupe-keys': 2,
     'no-dupe-args': 2,
-    'no-use-before-define': [2, { functions: false }]
+    'no-use-before-define': [2, { functions: false }],
+    '@typescript-eslint/no-explicit-any': ['off']
   }
 };
