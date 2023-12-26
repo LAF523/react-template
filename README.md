@@ -2,7 +2,7 @@
 
 ## 模板简介
 
-> 推荐node环境20.x
+> 强规范的函数式编程项目模板 推荐node环境20.x
 
 基础配置:
 
@@ -488,7 +488,8 @@ export default defineConfig({
             globalVars: {
               //配置全局变量
               blue: '#1CC0FF'
-            }
+            },
+            additionalData: '@import "./src/global.less";  ' // 或者自动将全局变量文件引入每个less文件中
           }
         }
       }
@@ -1059,6 +1060,185 @@ export default {
   addUserInfo
 };
 ```
+
+### aHooks
+
+引入常用基础hooks,避免大家封装基础hook不统一的问题
+
+```js
+npm install --save ahooks
+```
+
+### classnames
+
+判断类名更加简洁,减少类名判断的三元表达式
+
+```js
+npm install --save classnames
+```
+
+使用
+
+```js
+import classNames from 'classnames/bind';
+import styles from './submit-button.css';
+
+let cx = classNames.bind(styles);
+
+const Button = (props) => {
+    const {base=true,inprogress=false,error=false,disabled=false} = props
+    let className = cx('test',{
+      base: base,
+      inProgress: inprogress,
+      error: error,
+      disabled: disabled,
+    });
+    return(
+        <button className={className}>{text}</button>;
+    )
+}
+实际渲染效果:
+<button className={test base}>{text}</button>
+```
+
+### TODO
+
+#### 状态管理
+
+zustand,mobx或者直接封装context+reducer
+
+#### 单元测试
+
+mocha+should或者JEST
+
+#### HOF重构http模块
+
+做一个统一函数式基础范式
+
+### CI/CD
+
+使用`gh-pages`库可以将项目部署到静态网站上
+
+```js
+npm i gh-pages -D
+```
+
+#### 手动部署
+
+package.json添加命令
+
+```js
+"deploy": "gh-pages -d dist -r https://github.com/LAF523/eslintTest.git -b gh-pages"  // 地址替换一下
+命令含义: -d dist指定推送到gitHub Pages的目录 -r指定git仓库地址  -b指定推送到哪个分支
+```
+
+vite.config.js 中根据一下情况设置正确的 base 
+
+```js
+如果你正要部署到 https://<USERNAME>.github.io/，或者通过 GitHub Pages 部署到一个自定义域名（例如 www.example.com），请将 base 设置为 '/'。或者，你也可以从配置中移除 base，因为它默认为 '/'。
+
+如果你正在部署到 https://<USERNAME>.github.io/<REPO>/（例如你的仓库地址为 https://github.com<USERNAME>/<REPO>），那么请将 base 设置为 '/<REPO>/'。
+
+
+同时注意项目路由的基础路径也要设置一下保持一致
+```
+
+运行构建和部署命令
+
+```js
+npm run build
+npm run deploy
+```
+
+前往gitHub项目仓库中:
+
+```js
+setting => 侧边栏Pages => 查看Build and deployment选项中分支是否正确和是否为:root,(默认是gh-pages分支) => 点击save => 上方显示网址便是部署好的地址
+```
+
+#### 自动化构建/部署
+
+这里使用GitHub Actions构建自动化部署流程,不在使用`gh-pages`包
+
+项目根目录新建`/github/workflows/deploy.yaml`文件,添加部署流程:在向主分支push代码的时候自动执行构建和部署:
+
+```js
+# 将静态内容部署到 GitHub Pages 的简易工作流程
+name: Build and Deploy # 工作流名称 如省略使用当前文件名
+run-name: Deploy by @${{ github.actor }} # 工作流运行时的名称 作者 如省略显示提交时的commit信息
+
+on:
+  # 监听push动作,仅在推送到默认分支时运行。
+  push:
+    branches: ['main']
+
+  # 这个选项可以使你手动在 Action tab 页面触发工作流
+  workflow_dispatch:
+
+# 设置 GITHUB_TOKEN 的权限，以允许部署到 GitHub Pages。
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 允许一个并发的部署
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
+
+jobs:
+  # 定义一个名为 deploy 的工作流
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout  # clone该仓库源码到工作流中
+      uses: actions/checkout@v4
+
+    - name: Set up Node  # 设置node环境,指定node版本为20,并缓存npm包提升后续执行速度
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20
+        cache: 'npm'
+
+      # 缓存 npm node_modules
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-npm-cache-
+
+      # 安装依赖 npm
+    - name: Install dependencies
+      # 如果没有命中缓存才执行 npm install
+      if: steps.cache-deps.outputs.cache-hit != 'true'
+      run: npm install
+
+
+    - name: Deploy to GitHub Pages
+    # 此actions的官方文档 https://github.com/JamesIves/github-pages-deploy-action
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        # 要部署的文件夹，必填，build 构建后的打包文件夹
+        FOLDER: .
+        # 希望部署的分支，默认gh-pages
+        BRANCH: gh-pages
+        TOKEN: ${{ secrets.ACCESS_TOKEN }}
+```
+
+在gitHub中申请token,
+
+```js
+用户的Settings中 => 最下方Developer settings => Personal access tokens => Tokens => 右上角Generate new token => 设置过期时间,复制token
+
+回到项目仓库 => Settings => Secrets =>New repository secret => 命名要和上述yaml文件中TOKEN字段值的命名ACCESS_TOKEN一致
+
+还需再Pages中将Build and deployment的值设置为GitHub Actions
+```
+
+这将在自己push或者同意pr的时候自动执行构建部署
 
 ### 整体文件目录结构
 
