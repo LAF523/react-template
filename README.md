@@ -1158,14 +1158,14 @@ setting => 侧边栏Pages => 查看Build and deployment选项中分支是否正�
 
 #### 自动化构建/部署
 
-这里使用GitHub Actions构建自动化部署流程,不在使用`gh-pages`包
+使用GitHub Actions构建自动化部署流程,不在使用`gh-pages`包
 
 项目根目录新建`/github/workflows/deploy.yaml`文件,添加部署流程:在向主分支push代码的时候自动执行构建和部署:
 
 ```js
 # 将静态内容部署到 GitHub Pages 的简易工作流程
 name: Build and Deploy # 工作流名称 如省略使用当前文件名
-run-name: Deploy by @${{ github.actor }} # 工作流运行时的名称 作者 如省略显示提交时的commit信息
+run-name: Deploy by @${{ github.actor }} - ${{ github.event.head_commit.message }} # 工作流运行时的名称 作者 如省略显示提交时的commit信息
 
 on:
   # 监听push动作,仅在推送到默认分支时运行。
@@ -1198,7 +1198,7 @@ jobs:
     - name: Set up Node  # 设置node环境,指定node版本为20,并缓存npm包提升后续执行速度
       uses: actions/setup-node@v3
       with:
-        node-version: 20
+        node-version: '20'
         cache: 'npm'
 
       # 缓存 npm node_modules
@@ -1216,13 +1216,15 @@ jobs:
       if: steps.cache-deps.outputs.cache-hit != 'true'
       run: npm install
 
+    - name: Build With Vite
+      run: npm run build
 
     - name: Deploy to GitHub Pages
     # 此actions的官方文档 https://github.com/JamesIves/github-pages-deploy-action
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         # 要部署的文件夹，必填，build 构建后的打包文件夹
-        FOLDER: .
+        FOLDER: dist
         # 希望部署的分支，默认gh-pages
         BRANCH: gh-pages
         TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -1231,11 +1233,11 @@ jobs:
 在gitHub中申请token,
 
 ```js
-用户的Settings中 => 最下方Developer settings => Personal access tokens => Tokens => 右上角Generate new token => 设置过期时间,复制token
+1. 用户的Settings中 => 最下方Developer settings => Personal access tokens => Tokens => 右上角Generate new token => 设置过期时间,复制token
 
-回到项目仓库 => Settings => Secrets =>New repository secret => 命名要和上述yaml文件中TOKEN字段值的命名ACCESS_TOKEN一致
+2. 回到项目仓库 => Settings => Secrets =>New repository secret => 命名要和上述yaml文件中TOKEN字段值的命名ACCESS_TOKEN一致
 
-还需再Pages中将Build and deployment的值设置为GitHub Actions
+3.Pages中将Build and deployment的值设置为gh-pages /(root) 点击save
 ```
 
 这将在自己push或者同意pr的时候自动执行构建部署

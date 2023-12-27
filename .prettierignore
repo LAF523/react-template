@@ -1,3 +1,4 @@
 # prettier忽略文件
 node_modules/
 dist/
+*.yaml
