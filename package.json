@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "prebuild": "npm run eslint || exit 1",
+    "prebuild": "npm run lint || exit 1",
     "lint": "eslint src/**/*.{ts,tsx} --fix",
     "preview": "vite preview",
     "prepare": "husky install",

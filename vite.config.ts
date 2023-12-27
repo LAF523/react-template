@@ -8,6 +8,7 @@ const envDir = path.resolve(process.cwd(), './env');
 export default defineConfig({
   envDir,
   envPrefix: 'VITE_',
+  base: 'react-template',
   resolve: {
     extensions: ['.js', '.ts', '.tsx', '.scss', '.css'],
     alias: {
