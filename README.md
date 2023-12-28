@@ -1160,7 +1160,13 @@ setting => 侧边栏Pages => 查看Build and deployment选项中分支是否正�
 
 使用GitHub Actions构建自动化部署流程,不在使用`gh-pages`包
 
-项目根目录新建`/github/workflows/deploy.yaml`文件,添加部署流程:在向主分支push代码的时候自动执行构建和部署:
+```js
+先设置一下项目的baseurl
+1.如果是hostroy模式的路由还需要配置nginx代理,否则刷新页面404
+2.这里使用hash模式
+```
+
+项目根目录新建`.github/workflows/deploy.yaml`文件,添加部署流程:在向主分支push代码的时候自动执行构建和部署:
 
 ```js
 # 将静态内容部署到 GitHub Pages 的简易工作流程
@@ -1171,6 +1177,8 @@ on:
   # 监听push动作,仅在推送到默认分支时运行。
   push:
     branches: ['main']
+    paths-ignore:   # 下列文件的变更不触发部署，可以自行添加
+      - README.md
 
   # 这个选项可以使你手动在 Action tab 页面触发工作流
   workflow_dispatch:
@@ -1219,21 +1227,19 @@ jobs:
     - name: Build With Vite
       run: npm run build
 
-    - name: Deploy to GitHub Pages
-    # 此actions的官方文档 https://github.com/JamesIves/github-pages-deploy-action
-      uses: JamesIves/github-pages-deploy-action@v4
+    # 部署到 GitHub pages
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3 # 使用部署到 GitHub pages 的 action
       with:
-        # 要部署的文件夹，必填，build 构建后的打包文件夹
-        FOLDER: dist
-        # 希望部署的分支，默认gh-pages
-        BRANCH: gh-pages
-        TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        publish_dir: dist # 部署打包后的 build 目录
+        github_token: ${{ secrets.ACCESS_TOKEN }} # secret 名
+        commit_message: 自动部署 # 部署时的 git 提交信息，自由填写
 ```
 
 在gitHub中申请token,
 
 ```js
-1. 用户的Settings中 => 最下方Developer settings => Personal access tokens => Tokens => 右上角Generate new token => 设置过期时间,复制token
+1. 用户的Settings中 => 最下方Developer settings => Personal access tokens => Tokens => 右上角Generate new token => 设置过期时间, => Select scopes中选择repo和workflow => 复制token只出现一次保存好
 
 2. 回到项目仓库 => Settings => Secrets =>New repository secret => 命名要和上述yaml文件中TOKEN字段值的命名ACCESS_TOKEN一致
 
