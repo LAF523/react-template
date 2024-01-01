@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
@@ -8,7 +9,7 @@ const envDir = path.resolve(process.cwd(), './env');
 export default defineConfig({
   envDir,
   envPrefix: 'VITE_',
-  base: 'react-template',
+  base: '/react-template',
   resolve: {
     extensions: ['.js', '.ts', '.tsx', '.scss', '.css'],
     alias: {
@@ -31,6 +32,14 @@ export default defineConfig({
           test: '#1CC0FF'
         }
       }
+    }
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom', //提供浏览器API以模拟浏览器环境
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html']
     }
   },
   server: {

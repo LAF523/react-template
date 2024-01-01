@@ -1,5 +1,3 @@
-
-
 ## 模板简介
 
 > 强规范的函数式编程项目模板 推荐node环境20.x
@@ -41,7 +39,7 @@
 ```js
 npm create vite@latest -- --template react-ts
 
-npm i 
+npm i
 ```
 
 根目录新建env
@@ -52,7 +50,7 @@ npm i
   |--.env.local # 放置敏感配置
   |--.env.development # 放置开发环境配置
   |--.env.production # 放置生产环境配置
-      
+
 vite.config.js配置env路径:
 npm i --save-dev @types/node 先安装一下,否则无法解析path
 
@@ -69,31 +67,42 @@ const config = defineConfig({
 
 ```js
 const config = defineConfig({
-    // ...
-    resolve: {
-      extensions: ['.js', '.ts', '.tsx', '.scss', '.css'],
-      alias: {
-        '@': path.resolve(__dirname, 'src'),// 源文件根目录
-        '@tests': path.resolve(__dirname, 'tests'),// 测试文件根目录
-        '@config': path.resolve(__dirname, 'config')// 配置文件根目录
-      }
-    },
-})
+  // ...
+  resolve: {
+    extensions: ['.js', '.ts', '.tsx', '.scss', '.css'],
+    alias: {
+      '@': path.resolve(__dirname, 'src'), // 源文件根目录
+      '@tests': path.resolve(__dirname, 'tests'), // 测试文件根目录
+      '@config': path.resolve(__dirname, 'config') // 配置文件根目录
+    }
+  }
+});
+```
+
+在tsconfig文件中也要添加:
+
+```js
+"compilerOptions": {
+    // 使用别名时避免ts语法检查找不到类型声明
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+},
 ```
 
 配置dev server
 
 ```js
 const config = defineConfig({
-    server: {
-      open: true, // 自动打开浏览器
-      port: 3002, // 服务端口
-      proxy: {
-        '/api': '', // api代理路径
-        '/mock': '' // mock代理路径
-      }
-    },
-})
+  server: {
+    open: true, // 自动打开浏览器
+    port: 3002, // 服务端口
+    proxy: {
+      '/api': '', // api代理路径
+      '/mock': '' // mock代理路径
+    }
+  }
+});
 ```
 
 ### EditorConfig
@@ -107,7 +116,7 @@ const config = defineConfig({
 
 # top-most EditorConfig file
 # 表示是最顶层的配置文件，设为 true 时，停止向上查找
-root = true 
+root = true
 
 # Unix-style newlines with a newline ending every file
 [*]
@@ -115,15 +124,15 @@ root = true
 # 通用配置 -----------
 
 # 缩进方式
-indent_style = space 
+indent_style = space
 # 设置换行符，值为 lf(换行)、cr(回车) 和 crlf(回车换行)
-end_of_line = lf 
+end_of_line = lf
 # 编码格式
-charset = utf-8 
+charset = utf-8
 # 是否删除行尾空格
-trim_trailing_whitespace = true 
+trim_trailing_whitespace = true
 # 缩进大小
-indent_size = 4 
+indent_size = 4
 
 # 匹配文件配置 -----------
 
@@ -213,40 +222,42 @@ The config that you've selected requires the following dependencies:
 
 ```js
 module.exports = {
-    "env": {
-        "browser": true,
-        "es2021": true
-    },
-    "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/recommended",
-        "plugin:react/recommended"
-    ],
-    "overrides": [
-        {
-            "env": {
-                "node": true
-            },
-            "files": [
-                ".eslintrc.{js,cjs}"
-            ],
-            "parserOptions": {
-                "sourceType": "script"
-            }
-        }
-    ],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaVersion": "latest",
-        "sourceType": "module"
-    },
-    "plugins": [
-        "@typescript-eslint",
-        "react"
-    ],
-    "rules": {
+  env: {
+    browser: true,
+    es2021: true
+  },
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'plugin:react/recommended'],
+  overrides: [
+    {
+      env: {
+        node: true
+      },
+      files: ['.eslintrc.{js,cjs}'],
+      parserOptions: {
+        sourceType: 'script'
+      }
     }
-}
+  ],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module'
+  },
+  plugins: ['@typescript-eslint', 'react'],
+  rules: {
+    'prettier/prettier': 'error',
+    'arrow-body-style': 'off',
+    'prefer-arrow-callback': 'off',
+    'no-unused-vars': 'error',
+    'no-debugger': 2,
+    'no-alert': 2,
+    'no-dupe-keys': 2,
+    'no-dupe-args': 2,
+    'no-use-before-define': [2, { functions: false }],
+    '@typescript-eslint/no-explicit-any': ['off'],
+    'react/prop-types': 'off' // 使用ts的参数类型检查
+  }
+};
 ```
 
 配置eslint忽略文件,根目录新建: .eslintignore
@@ -358,7 +369,7 @@ module.exports = {
       version: 'detect'
     }
   }
-}
+};
 ```
 
 统一编辑器配置,根目录新建`.vscode/settings.json`
@@ -366,7 +377,7 @@ module.exports = {
 ```js
 {
   "editor.formatOnSave": true, // 保存自动格式化
-  "editor.formatOnType": true, 
+  "editor.formatOnType": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
@@ -399,9 +410,9 @@ npm i vite-plugin-eslint -D
 vite.config.js中引入插件,可在运行时检查错误,并在控制台提示出来
 
 ```js
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import viteEslint from 'vite-plugin-eslint'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import viteEslint from 'vite-plugin-eslint';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -411,7 +422,7 @@ export default defineConfig({
       failOnError: false
     })
   ]
-})
+});
 ```
 
 ### Husky
@@ -431,9 +442,9 @@ npx husky install
 在package.json中添加命令,配置husky自动安装,便于团队使用,如此执行完npm install，将自动执行`husky install`初始化husky配置
 
 ```js
-"scripts": { 
-    "prepare": "husky install" 
-} 
+"scripts": {
+    "prepare": "husky install"
+}
 ```
 
 添加pre-commit hook将在下文配置完lint-staged之后统一添加:
@@ -460,7 +471,7 @@ package.json配置一下lint-staged:
     "src/**/*.{css,less}": [ //对src下样式文件进行校验
       "prettier --write --parser css"
     ],
-    "src/**/*.{ts,tsx,js,jsx}": [ 
+    "src/**/*.{ts,tsx,js,jsx}": [
       "eslint --fix",
       "prettier --write"
     ]
@@ -480,19 +491,19 @@ vite.config.js中配置:
 
 ```js
 export default defineConfig({
-    css: {
-        // 预处理器配置项
-        preprocessorOptions: {
-          less: {
-            math: 'always',
-            globalVars: {
-              //配置全局变量
-              blue: '#1CC0FF'
-            },
-            additionalData: '@import "./src/global.less";  ' // 或者自动将全局变量文件引入每个less文件中
-          }
-        }
+  css: {
+    // 预处理器配置项
+    preprocessorOptions: {
+      less: {
+        math: 'always',
+        globalVars: {
+          //配置全局变量
+          blue: '#1CC0FF'
+        },
+        additionalData: '@import "./src/global.less";  ' // 或者自动将全局变量文件引入每个less文件中
       }
+    }
+  }
 });
 ```
 
@@ -563,7 +574,6 @@ module.exports = {
   // 忽略以下文件的检查
   ignoreFiles: ['**/*.js', '**/*.jsx', '**/*.tsx', '**/*.ts', '**/*.json', '**/*.md']
 };
-
 ```
 
 配置忽略文件:`.stylelintignore`
@@ -601,210 +611,7 @@ package.json中添加命令:
 }
 ```
 
-### commit规范-交互式提交
-
-#### commitlint
-
-```js
-npm install --save-dev @commitlint/config-conventional @commitlint/cli
-```
-
-新建.commitlintrc.cjs并添加配置信息:
-
-```js
-module.exports = {
-  extends: ['@commitlint/config-conventional'],
-}
-```
-
-添加commit-msg钩子:
-
-```js
-npx husky add .husky/commit-msg "npx --no -- commitlint --edit $1"
-```
-
-#### 交互式提交
-
-@commitlint/cz-commitlint是commitlint官方提供的,配置项主要包括：messages和questions两部分。
-
-安装依赖:
-
-```js
-npm install @commitlint/cz-commitlint commitizen -D
-```
-
-package.json中配置commitizen:
-
-```js
-"config": {
-    "commitizen": {
-      "path": "@commitlint/cz-commitlint"
-    }
-}
-```
-
-.commitlintrc.js并新增配置信息:
-
-```js
-module.exports = {
-  extends: ['@commitlint/config-conventional'],
-  prompt: {
-    settings: {
-      enableMultipleScopes: true, // 支持多scope
-      scopeEnumSeparator: ',' // 多scope分隔符
-    },
-    messages: {
-      skip: '<可跳过>',
-      max: '最多输入 %d 个字符',
-      min: '至少需要输入 %d 个字符',
-      emptyWarning: '不能为空',
-      upperLimitWarning: '超过长度限制',
-      lowerLimitWarning: '未达到最少数字要求'
-    },
-    questions: {
-      type: {
-        description: '选择你要提交的信息类型 ',
-        enum: {
-          feat: {
-            description: '新功能',
-            title: 'Features',
-            emoji: '✨'
-          },
-          fix: {
-            description: '修复bug',
-            title: 'Bug Fixes',
-            emoji: '🐛'
-          },
-          docs: {
-            description: '书写文档',
-            title: 'Documentation',
-            emoji: '📚'
-          },
-          style: {
-            description: '代码格式化(空格, 格式化, 分号等)',
-            title: 'Styles',
-            emoji: '💎'
-          },
-          refactor: {
-            description: '代码重构',
-            title: 'Code Refactoring',
-            emoji: '📦'
-          },
-          perf: {
-            description: '性能优化提升',
-            title: 'Performance Improvements',
-            emoji: '🚀'
-          },
-          test: {
-            description: '测试',
-            title: 'Tests',
-            emoji: '🚨'
-          },
-          build: {
-            description: '调整构建或者依赖',
-            title: 'Builds',
-            emoji: '🛠'
-          },
-          ci: {
-            description: '调整持续集成',
-            title: 'Continuous Integrations',
-            emoji: '⚙️'
-          },
-          chore: {
-            description: '变更构建流程或者辅助工具',
-            title: 'Chores',
-            emoji: '♻️'
-          },
-          revert: {
-            description: '代码回退',
-            title: 'Reverts',
-            emoji: '🗑'
-          }
-        }
-      },
-      scope: {
-        description: '提交信息类型(模块、组件、页面)'
-      },
-      subject: {
-        description: '简洁明了的修改摘要'
-      },
-      body: {
-        description: '详细的调整信息描述'
-      },
-      isBreaking: {
-        description: '是否有非兼容性的调整？'
-      },
-      breaking: {
-        description: '请输入非兼容调整的详细描述'
-      },
-      isIssueAffected: {
-        description: '是否有关闭 issue'
-      },
-      issues: {
-        description: '列举关闭的 issue (例如 "fix #123", "re #123")'
-      }
-    }
-  }
-}
-```
-
-git commit`命令需要统一调整为 `:`npx git-cz`,亦可以将改命令添加到package.json中,方便后续使用:
-
-```js
-"scripts": {
-    "commit": "npx git-cz"
-},
-```
-
-### 版本管理规范
-
-#### 变更日志(change log)
-
-变更日志是对项目所做更改的详细记录，通常包括修复和新功能。变更日志通常由按时间顺序排列的列表组成，详细列出已进行的更改以及更改的执行者。变更日志文件通常被组织成段落，描述与特定目标相关的所有更改。每个段落通常以更改日期、作者姓名和电子邮件地址开头。列出每个修改过的文件的名称，以及被更改的功能或部分。还经常提供关于更改的简要原因和一些详细信息。
-
-变更日志在涉及许多开发人员的项目中至关重要，尤其开源项目。在任何项目中，变更日志都是有用的，因为了解以前的版本与当前版本的不同之处可能很重要。例如，发行说明通常基于项目变更日志，通常包括缺陷修复和产品增强。
-
-#### 生成变更日志(change log)
-
-自动生成`change log`是建立在约定式提交的基础上。前面我们已经详细讨论和实现了约定式提交规范。已经具备自动生成`change log`的条件，只要合适的工具，就能方便快速的自动生成`change log`。常用的工具主要有下面几个：
-
-#### conventional-changelog-cli
-
-安装
-
-```shell
-shell
-复制代码npm install -g conventional-changelog-cli
-```
-
-在package.json，配置生成变更日志的npm script命令:
-
-```json
-json复制代码{
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s &&  git add CHANGELOG.md"
-}
-```
-
-上面的命令只生成后续新的日志信息，不会覆盖前面到日志信息。而且仅提取匹配“功能(feat)”、“修复(fix)”、“性能改进(perf)”或“破坏性变更(refactor)”等类型的commit信息，生成日志信息到CHANGELOG.md文件。如果想重新生成全部的日志信息，需要用以下命令，这会覆盖前面生成的日志信息。
-
-```shell
-shell
-复制代码conventional-changelog -p angular -i CHANGELOG.md -s -r 0
-```
-
-conventional-changelog-cli有相应的推荐工作流程：
-
-1. 提交修改信息 commit change
-2. 修改`package.json`中的`version`
-3. 执行`npm run changelog`生成日志
-4. 提交package.json和Changelog.md文件
-5. 打tag
-6. push到远程git库
-
-这里有两点需要说明：
-
-- 生成日志之前需要，修改版本号
-- 生成日志之后再打tag，保证新的release版本中包含最新的changelog信息
+- 
 
 ### React-router
 
@@ -835,13 +642,13 @@ npm i axios
 目录结构
 
 ```js
-service             
-├─ http             
-│  ├─ axios.ts      
-│  ├─ config.ts     
-│  ├─ httpTools.ts  
-│  └─ index.ts      
-└─ index.ts   // 封装好的接口函数  
+service
+├─ http
+│  ├─ axios.ts
+│  ├─ config.ts
+│  ├─ httpTools.ts
+│  └─ index.ts
+└─ index.ts   // 封装好的接口函数
 ```
 
 axios.ts
@@ -889,7 +696,6 @@ service.interceptors.response.use(
 );
 
 export default service;
-
 ```
 
 config.ts
@@ -1107,13 +913,379 @@ const Button = (props) => {
 
 zustand,mobx或者直接封装context+reducer
 
-#### 单元测试
-
-mocha+should或者JEST
-
 #### HOF重构http模块
 
 做一个统一函数式基础范式
+
+### 单元测试
+
+vitest
+
+1. 安装 
+
+   ```js
+    npm i -D vitest
+    
+    npm i -D jsdom @testing-library/react @vitest/coverage-v8 
+   jsdom:  vitest依赖的基础库,用于在单元测试时，通过提供 Browser API 模拟浏览器环境
+   @testing-library/react: 让vitest支持react
+   @vitest/coverage-v8 是一个为Vitest提供代码覆盖率报告的插件，它基于V8引擎的内建代码覆盖率工具。在执行单元测试时，此插件可以收集和生成关于源代码中哪些部分被测试覆盖了的信息，最终输出一份详细的覆盖率报告。
+   ```
+
+2. 配置文件可以使用vite.config.ts,同时resolve.alias和plugins共享,添加如下配置(当然也可新建`vite.config.ts`单独配置,该文件优先级最高):
+   ```
+   如果使用和vite相同的配置文件,需要使用三斜线命令添加对vitest的引用,
+   /// <reference types="vitest" />
+   import { defineConfig } from "vite";
+   
+     test: {
+       globals: true,
+       environment: 'jsdom', //提供浏览器API以模拟浏览器环境
+       coverage: {
+         provider: 'v8',
+         reporter: ['text', 'json', 'html']
+       }
+     },
+   ```
+
+3. 命令行
+
+   ```js
+   {
+     "scripts": {
+       "test": "vitest",
+       "coverage": "vitest run --coverage" //生成代码覆盖率报告
+     }
+   }
+   ```
+
+4. 配合lint-staged使用,提交时自动对修改过的文件进行测试
+
+   ```js
+   package.json
+   {
+     "lint-staged": {
+       "*.{js,ts,tsx}": ""*.{js,ts,tsx}": "vitest --changed HEAD~1 --run""
+     },
+   }
+   ```
+
+5. vscode插件安装: Vitest [地址](https://marketplace.visualstudio.com/items?itemName=ZixuanChen.vitest-explorer)
+
+   ```js
+   在 vscode 中运行/调试 vitest 测试
+   支持🎊监视模式。测试重运行速度极快
+   
+   
+   vitest.enable ：此插件将尝试检测当前项目是否设置了 Vitest 以激活自身。失败时，您可以手动启用插件
+   vitest.nodeEnv ：传递给运行进程的 env 除了 process.env
+   vitest.commandLine ：启动 vitest 测试的命令行。它应该具有附加额外参数的能力。例如 npx vitest ，或 yarn test -- .（这是一个工作区设置。请勿直接在用户设置中更改，这会影响您打开的所有项目）
+   vitest.include: Include glob for test files. Default: [\"**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}\"]
+   vitest.include ：包含测试文件的 glob。违约： [\"**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}\"]
+   vitest.exclude: Exclude globs for test files. Default: [\"**/node_modules/**\", \"**/dist/**\", \"**/cypress/**\", \"**/.{idea,git,cache,output,temp}/**\"]
+   vitest.exclude ：排除测试文件的 glob。违约： [\"**/node_modules/**\", \"**/dist/**\", \"**/cypress/**\", \"**/.{idea,git,cache,output,temp}/**\"]
+   vitest.debugExclude: Automatically skip files covered by these glob patterns. Default: [\"<node_internals>/**\", \"**/node_modules/**\"]
+   vitest.debugExclude ：自动跳过这些 glob 模式覆盖的文件。违约： [\"<node_internals>/**\", \"**/node_modules/**\"]
+   ```
+
+6. 测试编写
+
+   ```js
+   假设我们src/components下有一个Button组件,在src下新建tests/components/button.test.tsx文件,其中编写我们需要测试的代码
+   在编写测试之前我们需要搞清楚两件事: 测什么和期望的结果是什么:
+   测试什么:
+   1.组件是否成功渲染
+   2.传入参数1,是否组件状态是否成功响应
+   3.传入参数2,是否组件状态是否成功响应
+   ...
+   4.按钮点击时,事件是否正常触发 等等
+   
+   测试函数也是这样的套路
+   ```
+
+   测试组件:
+
+   ```js
+   Button组件代码:
+   interface ButtonProps {
+     onClick?: () => void;
+     disabled?: boolean;
+   }
+   const Button: React.FC<ButtonProps> = ({ onClick, disabled = false }) => {
+     return (
+       <>
+         <button
+           onClick={onClick}
+           disabled={disabled}
+         >
+           按钮
+         </button>
+       </>
+     );
+   };
+   
+   export default Button;
+   
+   测试文件代码:button.test.tsx
+   // 引入测试库函数，用来 mocking 模拟操作
+   import { render, fireEvent } from '@testing-library/react';
+   // 引入测试 api ，用来编写用例的逻辑
+   import { describe, it, expect, vi } from 'vitest';
+   // describe 将多个测试用例集成,用于测试一个组件多个测试点
+   // it 同test 定义一个测试用例
+   // expect 用来断言，期望
+   
+   // 引入被测试组件
+   import Button from './index';
+   
+   // 测试思路:
+   // 1.需要测试什么
+   //    1.点击按钮是否触发回调函数
+   //    2.传递参数disabled是否禁用按钮
+   
+   describe('click and disabled', () => {
+     it('test click', () => {
+       // 生成测试所需的函数,用于传递给button
+       const handleCallback = vi.fn();
+       // 渲染button
+       const button = render(<Button onClick={handleCallback} />);
+       // 组件被渲染之后，通过 getByRole 查询到组件的 dom 节点
+       const element = button.getByRole('button');
+       // 触发点击事件
+       fireEvent.click(element);
+       // 检查事件是否被成功触发
+       expect(handleCallback).toHaveBeenCalled();
+     });
+     it('test disable', () => {
+       // 生成测试回调函数
+       // 渲染button并添加disable属性
+       // 获取渲染到的button
+       // 触发点击事件
+       // 断言点击事件是否未触发
+       const handleCallback = vi.fn();
+       const button = render(
+         <Button
+           onClick={handleCallback}
+           disabled={true}
+         />
+       );
+       const element = button.getByRole('button');
+       fireEvent.click(element);
+       expect(handleCallback).not.toHaveBeenCalled();
+     });
+   });
+   ```
+
+### commit规范-交互式提交
+
+#### commitlint
+
+```js
+npm install --save-dev @commitlint/config-conventional @commitlint/cli
+```
+
+新建.commitlintrc.cjs并添加配置信息:
+
+```js
+module.exports = {
+  extends: ['@commitlint/config-conventional']
+};
+```
+
+添加commit-msg钩子:
+
+```js
+npx husky add .husky/commit-msg "npx --no -- commitlint --edit $1"
+```
+
+#### 交互式提交
+
+@commitlint/cz-commitlint是commitlint官方提供的,配置项主要包括：messages和questions两部分。
+
+安装依赖:
+
+```js
+npm install @commitlint/cz-commitlint commitizen -D
+```
+
+package.json中配置commitizen:
+
+```js
+"config": {
+    "commitizen": {
+      "path": "@commitlint/cz-commitlint"
+    }
+}
+```
+
+.commitlintrc.js并新增配置信息:
+
+```js
+module.exports = {
+  extends: ['@commitlint/config-conventional'],
+  prompt: {
+    settings: {
+      enableMultipleScopes: true, // 支持多scope
+      scopeEnumSeparator: ',' // 多scope分隔符
+    },
+    messages: {
+      skip: '<可跳过>',
+      max: '最多输入 %d 个字符',
+      min: '至少需要输入 %d 个字符',
+      emptyWarning: '不能为空',
+      upperLimitWarning: '超过长度限制',
+      lowerLimitWarning: '未达到最少数字要求'
+    },
+    questions: {
+      type: {
+        description: '选择你要提交的信息类型 ',
+        enum: {
+          feat: {
+            description: '新功能',
+            title: 'Features',
+            emoji: '✨'
+          },
+          fix: {
+            description: '修复bug',
+            title: 'Bug Fixes',
+            emoji: '🐛'
+          },
+          docs: {
+            description: '书写文档',
+            title: 'Documentation',
+            emoji: '📚'
+          },
+          style: {
+            description: '代码格式化(空格, 格式化, 分号等)',
+            title: 'Styles',
+            emoji: '💎'
+          },
+          refactor: {
+            description: '代码重构',
+            title: 'Code Refactoring',
+            emoji: '📦'
+          },
+          perf: {
+            description: '性能优化提升',
+            title: 'Performance Improvements',
+            emoji: '🚀'
+          },
+          test: {
+            description: '测试',
+            title: 'Tests',
+            emoji: '🚨'
+          },
+          build: {
+            description: '调整构建或者依赖',
+            title: 'Builds',
+            emoji: '🛠'
+          },
+          ci: {
+            description: '调整持续集成',
+            title: 'Continuous Integrations',
+            emoji: '⚙️'
+          },
+          chore: {
+            description: '变更构建流程或者辅助工具',
+            title: 'Chores',
+            emoji: '♻️'
+          },
+          revert: {
+            description: '代码回退',
+            title: 'Reverts',
+            emoji: '🗑'
+          }
+        }
+      },
+      scope: {
+        description: '提交信息类型(模块、组件、页面)'
+      },
+      subject: {
+        description: '简洁明了的修改摘要'
+      },
+      body: {
+        description: '详细的调整信息描述'
+      },
+      isBreaking: {
+        description: '是否有非兼容性的调整？'
+      },
+      breaking: {
+        description: '请输入非兼容调整的详细描述'
+      },
+      isIssueAffected: {
+        description: '是否有关闭 issue'
+      },
+      issues: {
+        description: '列举关闭的 issue (例如 "fix #123", "re #123")'
+      }
+    }
+  }
+};
+```
+
+git commit`命令需要统一调整为 `:`npx git-cz`,亦可以将改命令添加到package.json中,方便后续使用:
+
+```js
+"scripts": {
+    "commit": "npx git-cz"
+},
+```
+
+### 版本管理规范
+
+#### 变更日志(change log)
+
+变更日志是对项目所做更改的详细记录，通常包括修复和新功能。变更日志通常由按时间顺序排列的列表组成，详细列出已进行的更改以
+及更改的执行者。变更日志文件通常被组织成段落，描述与特定目标相关的所有更改。每个段落通常以更改日期、作者姓名和电子邮件地
+址开头。列出每个修改过的文件的名称，以及被更改的功能或部分。还经常提供关于更改的简要原因和一些详细信息。
+
+变更日志在涉及许多开发人员的项目中至关重要，尤其开源项目。在任何项目中，变更日志都是有用的，因为了解以前的版本与当前版本
+的不同之处可能很重要。例如，发行说明通常基于项目变更日志，通常包括缺陷修复和产品增强。
+
+#### 生成变更日志(change log)
+
+自动生成`change log`是建立在约定式提交的基础上。前面我们已经详细讨论和实现了约定式提交规范。已经具备自动生
+成`change log`的条件，只要合适的工具，就能方便快速的自动生成`change log`。常用的工具主要有下面几个：
+
+#### conventional-changelog-cli
+
+安装
+
+```shell
+shell
+复制代码npm install -g conventional-changelog-cli
+```
+
+在package.json，配置生成变更日志的npm script命令:
+
+```json
+json复制代码{
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s &&  git add CHANGELOG.md"
+}
+```
+
+上面的命令只生成后续新的日志信息，不会覆盖前面到日志信息。而且仅提取匹配“功能(feat)”、“修复(fix)”、“性能改进(perf)”或“破
+坏性变更(refactor)”等类型的commit信息，生成日志信息到CHANGELOG.md文件。如果想重新生成全部的日志信息，需要用以下命令，这
+会覆盖前面生成的日志信息。
+
+```shell
+shell
+复制代码conventional-changelog -p angular -i CHANGELOG.md -s -r 0
+```
+
+conventional-changelog-cli有相应的推荐工作流程：
+
+1. 提交修改信息 commit change
+2. 修改`package.json`中的`version`
+3. 执行`npm run changelog`生成日志
+4. 提交package.json和Changelog.md文件
+5. 打tag
+6. push到远程git库
+
+这里有两点需要说明：
+
+- 生成日志之前需要，修改版本号
+- 生成日志之后再打tag，保证新的release版本中包含最新的changelog信息
 
 ### CI/CD
 
@@ -1132,7 +1304,7 @@ package.json添加命令
 命令含义: -d dist指定推送到gitHub Pages的目录 -r指定git仓库地址  -b指定推送到哪个分支
 ```
 
-vite.config.js 中根据一下情况设置正确的 base 
+vite.config.js 中根据一下情况设置正确的 base
 
 ```js
 如果你正要部署到 https://<USERNAME>.github.io/，或者通过 GitHub Pages 部署到一个自定义域名（例如 www.example.com），请将 base 设置为 '/'。或者，你也可以从配置中移除 base，因为它默认为 '/'。
@@ -1158,10 +1330,10 @@ setting => 侧边栏Pages => 查看Build and deployment选项中分支是否正�
 
 #### 自动化构建/部署
 
-使用GitHub Actions构建自动化部署流程,不在使用`gh-pages`包
+使用GitHub Actions构建自动化部署流程,不在使用`gh-pages`包,本项目使用该种方式配置
 
 ```js
-先设置一下项目的baseurl
+先设置一下项目的baseurl,防止部署后路由和地址不一致
 1.如果是hostroy模式的路由还需要配置nginx代理,否则刷新页面404
 2.这里使用hash模式
 ```
@@ -1241,18 +1413,18 @@ jobs:
 ```js
 1. 用户的Settings中 => 最下方Developer settings => Personal access tokens => Tokens => 右上角Generate new token => 设置过期时间, => Select scopes中选择repo和workflow => 复制token只出现一次保存好
 
-2. 回到项目仓库 => Settings => Secrets =>New repository secret => 命名要和上述yaml文件中TOKEN字段值的命名ACCESS_TOKEN一致
+2. 回到项目仓库 => Settings => Secrets =>New repository secret => 命名要和上述yaml文件中github_token字段值的命名ACCESS_TOKEN一致
 
 3.Pages中将Build and deployment的值设置为gh-pages /(root) 点击save
 ```
 
-这将在自己push或者同意pr的时候自动执行构建部署
+这将在push或者同意pr到main分支的时候自动执行构建部署
 
 ### 整体文件目录结构
 
 > 使用tree-node-cli生成
 >
-> `treee -L 3 -I "node_modules|.git" -a --dirs-first`
+> `treee -L 4 -I "node_modules|.git" -a --dirs-first`
 
 ```js
 react-template
@@ -1263,11 +1435,18 @@ react-template
 │   └── pre-commit
 ├── .vscode
 │   └── settings.json
+├── dist
+│   ├── assets
+│   │   ├── index-5eLZ2vov.css
+│   │   ├── index-xAMt-rJf.js 
+│   │   └── react-h3aPdYU7.svg
+│   ├── index.html
+│   └── vite.svg
 ├── env
 │   ├── .env
-│   ├── .env.development
+│   ├── .env.development      
 │   ├── .env.local
-│   └── .env.production
+│   └── .env.production       
 ├── public
 │   └── vite.svg
 ├── src
@@ -1275,14 +1454,23 @@ react-template
 │   │   └── react.svg
 │   ├── common
 │   ├── components
+│   │   └── button
+│   │       └── index.tsx
 │   ├── layouts
 │   ├── pages
 │   ├── routes
 │   ├── service
 │   │   ├── http
+│   │   │   ├── axios.ts
+│   │   │   ├── config.ts
+│   │   │   ├── httpTools.ts
+│   │   │   └── index.ts
 │   │   └── index.ts
 │   ├── stores
 │   ├── styles
+│   ├── tests
+│   │   └── components
+│   │       └── button.test.tsx
 │   ├── App.css
 │   ├── App.tsx
 │   ├── index.css
@@ -1304,6 +1492,3 @@ react-template
 ├── tsconfig.node.json
 └── vite.config.ts
 ```
-
-
-
