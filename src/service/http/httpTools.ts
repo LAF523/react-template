@@ -2,11 +2,11 @@ import { message } from 'antd';
 import { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { netWorkErrMap, authErrMap } from './config.ts';
 
-// 添加token
+// 添加其他配置
 export const handleRequestHeader = (config: InternalAxiosRequestConfig<any>, otherConfig: object) => {
   return { ...config, ...otherConfig };
 };
-// 添加限权
+// 添加token
 export const handleAuth = (config: InternalAxiosRequestConfig<any>) => {
   config.headers['Authorization'] = localStorage.getItem('token') || '';
   return config;
@@ -22,7 +22,7 @@ export const handleNetErr = (error: { response: { status: string } }) => {
 // 匹配授权错误
 export const handleAuthError = (res: AxiosResponse<any>) => {
   const { code } = res.data;
-  const errMsg = authErrMap[code] || '未知错误';
+  const errMsg = authErrMap[code];
   message.error({ content: errMsg, duration: 2 });
 
   // 登出
