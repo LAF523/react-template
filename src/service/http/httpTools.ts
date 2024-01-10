@@ -15,17 +15,17 @@ export const handleAuth = (config: InternalAxiosRequestConfig<any>) => {
 // 匹配网络错误
 export const handleNetErr = (error: { response: { status: string } }) => {
   const { status } = error.response;
-  const errMsg = netWorkErrMap[status] || '未知错误';
+  const { msg, afterErr } = netWorkErrMap[status] || { msg: '未知网络错误' };
   //显示错误
-  message.error({ content: errMsg, duration: 2 });
+  msg && message.error({ content: msg, duration: 2 });
+  afterErr && afterErr();
 };
 // 匹配授权错误
 export const handleAuthError = (res: AxiosResponse<any>) => {
   const { code } = res.data;
-  const errMsg = authErrMap[code];
-  message.error({ content: errMsg, duration: 2 });
-
-  // 登出
+  const { msg, afterErr } = authErrMap[code] || {};
+  msg && message.error({ content: msg, duration: 2 });
+  afterErr && afterErr();
 };
 
 /**
