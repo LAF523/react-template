@@ -46,8 +46,12 @@ export default defineConfig({
     open: true, // 自动打开浏览器
     port: 3000, // 服务端口
     proxy: {
-      '/api': '', // api代理路径
-      '/mock': '' // mock代理路径
+      '/api': {
+        target: '',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/api/, '')
+      }, // api代理路径
+      '/mock': '' // mock代理路径,
     }
   }
 });
