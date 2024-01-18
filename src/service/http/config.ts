@@ -16,7 +16,9 @@ export const netWorkErrMap: ErrMap = {
   '400': { msg: '参数不正确!' },
   '401': {
     msg: '您未登录，或者登录已经超时，请先登录！',
-    afterErr() {}
+    afterErr() {
+      // logout();
+    }
   },
   '403': { msg: '您没有权限操作!' },
   '404': { msg: '请求地址出错!' },
@@ -32,8 +34,12 @@ export const netWorkErrMap: ErrMap = {
 };
 
 export const authErrMap: ErrMap = {
-  '10031': { msg: '登录失效，需要重新登录' },
-  '10032': { msg: '您太久没登录，请重新登录~' },
+  '10031': {
+    msg: '登录失效，需要重新登录'
+  }, // token 失效
+  '10032': {
+    msg: '您太久没登录，请重新登录~'
+  }, // token 过期
   '10033': { msg: '账户未绑定角色，请联系管理员绑定角色' },
   '10034': { msg: '该用户未注册，请联系管理员注册用户' },
   '10035': { msg: 'code 无法获取对应第三方平台用户' },

@@ -8,7 +8,8 @@ export const handleRequestHeader = (config: InternalAxiosRequestConfig<any>, oth
 };
 // 添加token
 export const handleAuth = (config: InternalAxiosRequestConfig<any>) => {
-  config.headers['Authorization'] = localStorage.getItem('token') || '';
+  const token = localStorage.getItem('token');
+  config.headers['Authorization'] = token ? 'Bearer ' + token : '';
   return config;
 };
 
