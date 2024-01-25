@@ -875,6 +875,13 @@ export default {
 npm install --save ahooks
 ```
 
+### lodash/ramda
+
+```js
+npm i --save lodash
+npm i --save-dev @types/lodash
+```
+
 ### classnames
 
 判断类名更加简洁,减少类名判断的三元表达式
@@ -907,9 +914,9 @@ const Button = (props) => {
 <button className={test base}>{text}</button>
 ```
 
-### store
+### useLocalStorage
 
-localstorage操作库
+localstorage操作
 
 ### qs
 
@@ -918,6 +925,10 @@ localstorage操作库
 ### react-activation
 
 keep-alive组件
+
+### autoprefixer
+
+保证css兼容,自动添加前缀
 
 ### TODO
 
