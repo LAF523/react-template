@@ -1,36 +1,18 @@
 ## 模板简介
 
-> 强规范的函数式编程项目模板 推荐node环境20.x
+> 该项目模板包括: 
+>
+> 1. 从编辑器行为到代码提交的规范限制
+> 2. 完善的文件夹结构
+> 3. 路由,状态管理,组件库
+> 4. 常用工具库: loash,aHooks等
+> 5. axios封装
+> 6. 单元测试
+> 7. CI/CD
 
-基础配置:
+基础配置: ` react@18.x`,`react-router-dom@6.x`,`vite@5.x`,`antd@5.x`,`axios@1.x + 封装`
 
-- .vscode
-
-- react@18.x
-
-- react-router-dom@6.x
-
-- vite@5.x
-
-- antd@5.x
-
-- axios@1.x + 封装
-
-  > 最终调用方式: const [data,err] = await getUserInfo()
-
-规范配置:
-
-- EditorConfig
-
-- eslint
-
-- prettier
-
-- husky
-
-- lint-staged
-
-- commitlint + 交互式提交
+规范配置: `EditorConfig`,`eslint`,`prettier`,`husky`,`lint-staged`,`commitlint + 交互式提交`
 
 ## 搭建步骤
 
@@ -105,7 +87,9 @@ const config = defineConfig({
 });
 ```
 
-### EditorConfig
+### 规范配置
+
+#### EditorConfig
 
 安装vscode插件 EditorConfig for VS Code
 
@@ -161,11 +145,44 @@ indent_style = space
 indent_size = 2
 ```
 
-### .vscode
+#### .vscode
 
 根目录新建`.vscode文件夹`,在其中新建settings.json文件,覆盖本地的vscode配置,主要用来配合插件进行自动格式化
 
-### Eslint
+贴一下该项目的:
+
+```js
+{
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit" //stylelint 自动修复
+  },
+  // eslint的配置
+  "eslint.codeAction.showDocumentation": {
+    // 启用文档提示
+    "enable": true
+  },
+  "eslint.options": {
+    // 指定vscode的eslint所处理的文件的后缀
+    "extensions": [".js", ".ts", ".tsx"]
+  },
+  "eslint.validate": ["javascript", "javascriptreact", "html", "react", "typescript", "typescriptreact"],
+  //
+
+  // 配置stylelint检查的文件类型范围
+  "stylelint.validate": ["css", "less", "postcss", "scss", "sass", "vue"],
+  "stylelint.enable": true,
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false
+  //
+}
+```
+
+#### Eslint
 
 安装VS Code插件ESLint,并在.vscode/settings.json添加:
 
@@ -279,7 +296,7 @@ package添加命令,递归检查并修复src下的ts,tsx
 }
 ```
 
-### Prettier
+#### Prettier
 
 安装VS Code插件Prettier,并在.vscode/settings.json添加:
 
@@ -325,7 +342,7 @@ node_modules/
 dist/
 ```
 
-### ESLint和Prettier的冲突
+#### ESLint和Prettier的冲突
 
 ```js
 npm i eslint-config-prettier eslint-plugin-prettier -D
@@ -401,7 +418,7 @@ module.exports = {
 }
 ```
 
-### Vite 中引入 ESLint
+#### Vite 中引入 ESLint
 
 ```js
 npm i vite-plugin-eslint -D
@@ -425,7 +442,7 @@ export default defineConfig({
 });
 ```
 
-### Husky
+#### Husky
 
 使用commot 的生命周期中自动代码校验,比如:在commit时,检验代码,不合格不可以commit
 
@@ -449,7 +466,7 @@ npx husky install
 
 添加pre-commit hook将在下文配置完lint-staged之后统一添加:
 
-### lint-staged
+#### lint-staged
 
 lint-staged可以只针对待提交区(staged)的文件做一些处理
 
@@ -479,7 +496,7 @@ package.json配置一下lint-staged:
 }
 ```
 
-### styleLint -less
+#### styleLint -less
 
 安装less,安装完成可以直接使用:
 
@@ -611,8 +628,6 @@ package.json中添加命令:
 }
 ```
 
-- 
-
 ### React-router
 
 安装
@@ -623,6 +638,70 @@ npm install react-router-dom@6
 
 使用方式:[官网](https://reactrouter.com/en/main/start/overview)
 
+### 状态管理
+
+[Redux Toolkit](https://cn.redux.js.org/introduction/getting-started)
+
+```js
+npm install @reduxjs/toolkit redux -S
+```
+
+使用简介:
+
+- src下新建:
+
+  ```js
+  stores       
+  ├─ index.ts  
+  └─ user.ts
+  ```
+
+```js
+index.ts:
+import { configureStore } from '@reduxjs/toolkit';
+import userSlice, { userType } from './user.ts';
+
+export interface rootStore {
+  user: userType;
+}
+// 总状态库
+const store = configureStore({
+  reducer: {
+    user: userSlice
+  }
+});
+export default store;
+
+user.ts:
+import { createSlice } from '@reduxjs/toolkit';
+
+export interface userType {
+  name: string;
+  token: string;
+}
+const initialState: userType = {
+  name: '',
+  token: ''
+};
+
+// createSlice自动生成对应的action creator和reduce
+const userSlice = createSlice({
+  name: 'user',
+  initialState,
+  reducers: {
+    setUserInfo(state, action) {
+      return {
+        ...state,
+        ...action.payload
+      };
+    }
+  }
+});
+
+export default userSlice.reducer; // 导出其中的reduce
+export const { setUserInfo } = userSlice.actions; // 导出其中的action creator
+```
+
 ### antd组件库
 
 ```js
@@ -631,7 +710,9 @@ npm install antd --save
 
 antd天然支持按需引入`import {....} from 'antd'`即按需引入
 
-### axios
+### axios封装
+
+最终调用方式: const [data,err] = await getUserInfo()
 
 ```js
 npm i axios
@@ -867,7 +948,9 @@ export default {
 };
 ```
 
-### aHooks
+### 常用工具库
+
+#### aHooks
 
 引入常用基础hooks,避免大家封装基础hook不统一的问题
 
@@ -875,14 +958,14 @@ export default {
 npm install --save ahooks
 ```
 
-### lodash/ramda
+#### lodash/ramda
 
 ```js
 npm i --save lodash
 npm i --save-dev @types/lodash
 ```
 
-### classnames
+#### classnames
 
 判断类名更加简洁,减少类名判断的三元表达式
 
@@ -914,31 +997,21 @@ const Button = (props) => {
 <button className={test base}>{text}</button>
 ```
 
-### useLocalStorage
+#### useLocalStorage
 
 localstorage操作
 
-### qs
+#### qs
 
 解析queryString
 
-### react-activation
+#### react-activation
 
 keep-alive组件
 
-### autoprefixer
+#### autoprefixer
 
 保证css兼容,自动添加前缀
-
-### TODO
-
-#### 状态管理
-
-zustand,mobx或者直接封装context+reducer
-
-#### HOF重构http模块
-
-做一个统一函数式基础范式
 
 ### 单元测试
 
@@ -1443,6 +1516,12 @@ jobs:
 
 这将在push或者同意pr到main分支的时候自动执行构建部署
 
+### TODO
+
+#### HOF重构http模块
+
+做一个统一函数式基础范式
+
 ### 整体文件目录结构
 
 > 使用tree-node-cli生成
@@ -1461,15 +1540,15 @@ react-template
 ├── dist
 │   ├── assets
 │   │   ├── index-5eLZ2vov.css
-│   │   ├── index-xAMt-rJf.js 
+│   │   ├── index-xAMt-rJf.js
 │   │   └── react-h3aPdYU7.svg
 │   ├── index.html
 │   └── vite.svg
 ├── env
 │   ├── .env
-│   ├── .env.development      
+│   ├── .env.development
 │   ├── .env.local
-│   └── .env.production       
+│   └── .env.production
 ├── public
 │   └── vite.svg
 ├── src
@@ -1490,6 +1569,8 @@ react-template
 │   │   │   └── index.ts
 │   │   └── index.ts
 │   ├── stores
+│   │   ├── index.ts
+│   │   └── user.ts
 │   ├── styles
 │   ├── tests
 │   │   └── components
