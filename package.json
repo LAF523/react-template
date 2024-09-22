@@ -19,6 +19,7 @@
     "@reduxjs/toolkit": "^2.2.1",
     "ahooks": "^3.7.8",
     "antd": "^5.12.2",
+    "autoprefixer": "^10.4.20",
     "axios": "^1.6.2",
     "classnames": "^2.3.2",
     "lodash": "^4.17.21",
@@ -38,6 +39,7 @@
     "@types/react-dom": "^18.2.17",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
+    "@vitejs/plugin-legacy": "^5.4.2",
     "@vitejs/plugin-react": "^4.2.1",
     "@vitest/coverage-v8": "^1.1.1",
     "commitizen": "^4.3.0",
@@ -59,6 +61,7 @@
     "stylelint-config-standard": "^28.0.0",
     "typescript": "^5.2.2",
     "vite": "^5.0.8",
+    "vite-plugin-compression": "^0.5.1",
     "vite-plugin-eslint": "^1.8.1",
     "vitest": "^1.1.1"
   },
