@@ -1,0 +1,19 @@
+.github/workflows/deploy.yaml
+  s_4c9d47ee236a5b::t_326cd55cce116d 35-36,38,42,45-46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.40-trip",
+  "base_commit_sha": "ea84f15086c6fa62d182cb24d48f4b86d33b7739",
+  "prompts": {},
+  "sessions": {
+    "s_4c9d47ee236a5b": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a01954-3624-70f1-825c-212d380f5203",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "Liaofei <liaf@trip.com>"
+    }
+  }
+}
