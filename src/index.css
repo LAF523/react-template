@@ -1,5 +1,5 @@
 :root {
-  color: rgba(255, 255, 255, 87%);
+  color: rgb(255 255 255 / 87%);
   font-weight: 400;
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

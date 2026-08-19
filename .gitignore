@@ -10,6 +10,8 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+coverage
+*.tsbuildinfo
 # *.local 正是开发需要打开注释
 
 # Editor directories and files

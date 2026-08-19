@@ -18,15 +18,23 @@ export const handleNetErr = (error: { response: { status: string } }) => {
   const { status } = error.response;
   const { msg, afterErr } = netWorkErrMap[status] || { msg: '未知网络错误' };
   //显示错误
-  msg && message.error({ content: msg, duration: 2 });
-  afterErr && afterErr();
+  if (msg) {
+    message.error({ content: msg, duration: 2 });
+  }
+  if (afterErr) {
+    afterErr();
+  }
 };
 // 匹配授权错误
 export const handleAuthError = (res: AxiosResponse<any>) => {
   const { code } = res.data;
   const { msg, afterErr } = authErrMap[code] || {};
-  msg && message.error({ content: msg, duration: 2 });
-  afterErr && afterErr();
+  if (msg) {
+    message.error({ content: msg, duration: 2 });
+  }
+  if (afterErr) {
+    afterErr();
+  }
 };
 
 /**
